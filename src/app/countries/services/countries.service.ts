@@ -13,4 +13,16 @@ export class CountriesService {
 
     return this.http.get<Country[]>(url).pipe(catchError(() => of([])));
   }
+
+  searchByName(query: string): Observable<Country[]> {
+    const url = `${this.apiUrl}/name/${query}`;
+
+    return this.http.get<Country[]>(url).pipe(catchError(() => of([])));
+  }
+
+  searchByRegion(query: string): Observable<Country[]> {
+    const url = `${this.apiUrl}/region/${query}`;
+
+    return this.http.get<Country[]>(url).pipe(catchError(() => of([])));
+  }
 }
