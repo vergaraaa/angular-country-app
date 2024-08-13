@@ -20,10 +20,7 @@ export class CountriesService {
   }
 
   private getCountriesRequest(url: string): Observable<Country[]> {
-    return this.http.get<Country[]>(url).pipe(
-      catchError(() => of([])),
-      delay(2000)
-    );
+    return this.http.get<Country[]>(url).pipe(catchError(() => of([])));
   }
 
   searchByCapital(query: string): Observable<Country[]> {
