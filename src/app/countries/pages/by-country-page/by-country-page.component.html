@@ -4,7 +4,8 @@
 <div class="row">
   <div class="col">
     <!-- SEARCHBOX -->
-    <shared-search-box placeholder="Name" (onValue)="searchByName($event)"></shared-search-box>
+    <shared-search-box placeholder="Name" [initialQuery]="initialQuery"
+      (onDebounce)="searchByName($event)"></shared-search-box>
   </div>
 </div>
 
