@@ -7,7 +7,9 @@ import { Region } from '../interfaces/region.type';
 
 @Injectable({ providedIn: 'root' })
 export class CountriesService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.loadFromLocalStorage();
+  }
 
   private apiUrl: string = 'https://restcountries.com/v3.1';
 
@@ -25,6 +27,16 @@ export class CountriesService {
       countries: [],
     },
   };
+
+  private saveToLocalStorage() {
+    localStorage.setItem('cacheStore', JSON.stringify(this.cacheStore));
+  }
+
+  private loadFromLocalStorage() {
+    if (!localStorage.getItem('cacheStore')) return;
+
+    this.cacheStore = JSON.parse(localStorage.getItem('cacheStore')!);
+  }
 
   searchByAlphaCode(code: string): Observable<Country | null> {
     const url = `${this.apiUrl}/alpha/${code}`;
@@ -44,7 +56,8 @@ export class CountriesService {
     const url = `${this.apiUrl}/capital/${query}`;
 
     return this.getCountriesRequest(url).pipe(
-      tap((countries) => (this.cacheStore.byCapital = { query, countries }))
+      tap((countries) => (this.cacheStore.byCapital = { query, countries })),
+      tap(() => this.saveToLocalStorage())
     );
   }
 
@@ -52,14 +65,16 @@ export class CountriesService {
     const url = `${this.apiUrl}/name/${query}`;
 
     return this.getCountriesRequest(url).pipe(
-      tap((countries) => (this.cacheStore.byName = { query, countries }))
+      tap((countries) => (this.cacheStore.byName = { query, countries })),
+      tap(() => this.saveToLocalStorage())
     );
   }
 
   searchByRegion(region: Region): Observable<Country[]> {
     const url = `${this.apiUrl}/region/${region}`;
     return this.getCountriesRequest(url).pipe(
-      tap((countries) => (this.cacheStore.byRegion = { region, countries }))
+      tap((countries) => (this.cacheStore.byRegion = { region, countries })),
+      tap(() => this.saveToLocalStorage())
     );
   }
 }
